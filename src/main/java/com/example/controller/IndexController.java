@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +36,7 @@ public class IndexController {
 	
 	@CrossOrigin(ANGULAR_HOST)
 	@PostMapping(value = "/persons", consumes = "application/json")
-	public ResponseEntity<?> addPerson(@RequestBody Person person) {
+	public ResponseEntity<Person> addPerson(@RequestBody Person person) {
 		personRepository.save(person);
 		HttpHeaders responseHeaders = new HttpHeaders();
 		URI newPollUri = ServletUriComponentsBuilder.
@@ -43,7 +44,7 @@ public class IndexController {
 				.buildAndExpand(person.getId())
 				.toUri();
 		responseHeaders.setLocation(newPollUri);
-		return new ResponseEntity<>(null,responseHeaders,HttpStatus.CREATED);
+		return new ResponseEntity<>(person,responseHeaders,HttpStatus.CREATED);
 	}
 	
 	@CrossOrigin(ANGULAR_HOST)
@@ -52,4 +53,11 @@ public class IndexController {
 		return new ResponseEntity<>(personRepository.findAll(),HttpStatus.OK);
 	}
 
+	@CrossOrigin(ANGULAR_HOST)
+	@DeleteMapping("/persons/{id}")
+	public ResponseEntity<?> deletePerson(@PathVariable int id){
+		personRepository.delete(id);
+		return ResponseEntity.ok().build();
+	}
+	
 }
