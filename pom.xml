@@ -8,6 +8,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
+
 	<name>ng-crud</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -22,20 +23,22 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<start-class>com.example.demo.NgCrudApplication</start-class>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
-			<version>4.3.11.RELEASE</version>
+			</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>1.5.4.RELEASE</version>
-		</dependency>
+			</dependency>
 
 		<dependency>
 			<groupId>mysql</groupId>
@@ -82,8 +85,6 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-core</artifactId> 
-			<version>5.2.11.Final</version> </dependency> -->
 	</dependencies>
 
 	<build>
@@ -92,8 +93,77 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>admin</id>
+						<phase>generate-resources</phase>
+						<configuration>
+							<tasks>
+								<exec executable="cmd" osfamily="windows"
+									dir="${project.basedir}/src/webapp/ng-crud/">
+									 <arg value="/c" />
+									
+									<arg value="ng build --prod --output-path=../../main/resources/static" />
+								</exec>
+								<exec executable="/bin/sh" osfamily="mac"
+									dir="${project.basedir}/src/webapp/ng-crud/">
+									<arg value="-c" />
+									<arg value="ng build --output-path=../../main/resources/static"  />
+								</exec>
+								<exec executable="/bin/bash" osfamily="unix"
+									dir="${project.basedir}/src/webapp/ng-crud/">
+									<arg value="-c" />
+									<arg value="ng build --output-path=../../main/resources/static" />
+								</exec>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-antrun-plugin
+										</artifactId>
+										<versionRange>
+											[1.8,)
+										</versionRange>
+										<goals>
+											<goal>run</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
+
 
 
 </project>
